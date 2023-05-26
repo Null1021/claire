@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Claire ∙ Ahmed</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 100px;
+      background-color: #222;
+      color: #fff;
+    }
+
+    h1 {
+      color: #fff;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .input-box {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+    }
+
+    .detect-btn {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .detect-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .result {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .notice {
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .video-preview {
+      width: 100%;
+    }
+
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .popup-message {
+      background-color: #2a2626;
+      padding: 20px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .popup-message p {
+      margin: 0;
+    }
+
+    .footer {
+      margin-top: 50px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Claire™ | Lie Detector</h1>
+    <p class="notice">NOTE: YOUR VOICE AND CAMERA IS BEING RECORDED</p>
+    <video id="videoPreview" class="video-preview" autoplay muted></video>
+    <input type="text" id="inputQuestion" class="input-box" placeholder="Enter a question">
+    <input type="text" id="inputText" class="input-box" placeholder="Enter a statement">
+    <button onclick="detectLie()" class="detect-btn">Detect Lie</button>
+    <p id="result" class="result"></p>
+  </div>
+
+  <div class="popup" id="popupMessage" style="display: none;">
+    <div class="popup-message">
+      <p>Claire can't detect a lie without access to the camera and microphone.</p>
+      <button onclick="requestCameraAndMicPermission()">Grant Permissions</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Made with ❤️ by Ahmed</p>
+  </div>
+
+  <script>
+    var videoElement = document.getElementById("videoPreview");
+    var popupElement = document.getElementById("popupMessage");
+
+    function requestCameraAndMicPermission() {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(function(stream) {
+          videoElement.srcObject = stream;
+          popupElement.style.display = "none";
+        })
+        .catch(function(error) {
+          console.log("Error accessing camera and microphone: ", error);
+        });
+    }
+
+var previousText = "";
+
+function detectLie() {
+  var questionElement = document.getElementById("inputQuestion");
+  var question = questionElement.value.trim();
+  var inputElement = document.getElementById("inputText");
+  var inputText = inputElement.value.trim();
+  var resultElement = document.getElementById("result");
+
+  if (question === "") {
+    resultElement.innerText = "Enter a question";
+  } else if (inputText === "") {
+    resultElement.innerText = "Enter your statement";
+  } else if (inputText === previousText) {
+    resultElement.innerText = previousText;
+  } else {
+    var statements = [
+      "You are speaking the truth!",
+      "You are lying!"
+    ];
+    var randomStatement = statements[Math.floor(Math.random() * statements.length)];
+    resultElement.innerText = randomStatement;
+    previousText = inputText;
+  }
+}
+
+
+    // Prompt for camera and microphone permissions when the page loads
+    window.addEventListener("DOMContentLoaded", function() {
+      navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(function(stream) {
+          videoElement.srcObject = stream;
+        })
+        .catch(function(error) {
+          popupElement.style.display = "flex";
+        });
+    });
+  </script>
+</body>
+</html>
